@@ -37,16 +37,12 @@ queue = [(start, [])]
 while queue:
     (i, j), visited = queue.pop(0)
     visited.append((i, j))
-
     if (i, j) == finish:
         solutions.append(visited)
         continue
-
     directions = get_available_directions(m, i, j, visited)
-
     if not directions:
         continue
-
     for direction in directions:
         queue.append((direction, visited[:]))
 
