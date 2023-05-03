@@ -58,4 +58,4 @@ for i, solution in enumerate(solutions):
                 print(" 0 ", end="")
             else:
                 print(" - ", end="")
-        print())
+        print()
