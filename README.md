@@ -1,61 +1,46 @@
-m = [[1,0,0,0,0,0,0,0,0,1],
-     [1,1,1,1,0,0,0,0,0,1],
-     [1,0,0,1,1,1,1,1,1,1],
-     [1,1,1,1,0,0,0,0,1,0],
-     [0,1,0,0,0,0,0,1,1,1],
-     [1,1,0,0,0,0,1,1,1,0],
-     [0,1,0,1,1,1,1,0,0,0],
-     [0,1,0,1,0,0,1,1,1,1],
-     [0,1,0,1,0,0,0,1,0,1],
-     [1,1,1,1,1,1,1,1,1,1]]
+n = [int(input("Numarul de virfuri: ")), int(input("Numarul muchiilor: "))]
+k = int(input("Lungimea traseului: "))
+i = int(input("Start: "))
+h = int(input("Finish: "))
 
-print("Labirintul:")
-for x in m:
-    print(x)
+print("Virfurile intre care sunt muchii si ponderea lor:\nExemplu: m[1] 1 2 10")
+m = []
+for _ in range(n[1]):
+    m.append([int(x) for x in input("m[" + str(_ + 1) + "] ").split()])
 
-start = tuple(map(int, input("Start: ").split()))
-finish = tuple(map(int, input("Finish: ").split()))
+l = [[] for _ in range(n[0])]
+for j in range(n[1]):
+    l[m[j][0] - 1].append(m[j])
 
-if m[start[0]][start[1]] == 0 or m[finish[0]][finish[1]] == 0:
-    print("Start sau Finish invalid!")
-    quit()
+def graf(l, i, k, h, d=[]):
+    if len(d) == k:
+        if d[-1][1] == h:
+            return [d]
+        else:
+            return []
+    r = []
+    for f in l[i - 1]:
+        r.extend(graf(l, f[1], k, h, d + [f]))
+    return r
 
-def get_available_directions(maze, i, j, visited):
-    directions = []
-    if i + 1 < len(maze) and maze[i+1][j] == 1 and (i+1, j) not in visited:
-        directions.append((i+1, j))
-    if i > 0 and maze[i-1][j] == 1 and (i-1, j) not in visited:
-        directions.append((i-1, j))
-    if j + 1 < len(maze[0]) and maze[i][j+1] == 1 and (i, j+1) not in visited:
-        directions.append((i, j+1))
-    if j > 0 and maze[i][j-1] == 1 and (i, j-1) not in visited:
-        directions.append((i, j-1))
-    return directions
+print("Solutii:")
+st = []
+r = graf(l, i, k, h)
+print(r)
 
-solutions = []
-queue = [(start, [])]
-while queue:
-    (i, j), visited = queue.pop(0)
-    visited.append((i, j))
-    if (i, j) == finish:
-        solutions.append(visited)
-        continue
-    directions = get_available_directions(m, i, j, visited)
-    if not directions:
-        continue
-    for direction in directions:
-        queue.append((direction, visited[:]))
+for x in r:
+    s = 0
+    print("{" + str(x[0][0]), end='')
+    for y in x:
+        s += y[2]
+        print(", " + str(y[1]), end='')
+    print("} pondere: " + str(s))
+    st.append(s)
 
-print(f"\nNumarul de solutii: {len(solutions)}\n")
-for i, solution in enumerate(solutions):
-    print(f"Solutia nr: {i+1}")
-    print(solution)
-    for row in range(len(m)):
-        for col in range(len(m[0])):
-            if (row, col) == start or (row, col) == finish or (row, col) in solution:
-                print(" 1 ", end="")
-            elif m[row][col] == 0:
-                print(" 0 ", end="")
-            else:
-                print(" - ", end="")
-        print()
+print("Solutia cu cea mai mica pondere:\n{" + str(r[st.index(min(st))][0][0]), end='')
+for y in r[st.index(min(st))]:
+    print(", " + str(y[1]), end='')
+print("} pondere: " + str(min(st)))
+
+print(", " + str(y[1]), end='')
+print("} pondere: " + str(min(st)))
